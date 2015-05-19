@@ -1,0 +1,5 @@
+
+function jqcEmpty() {
+    return {};
+}
+

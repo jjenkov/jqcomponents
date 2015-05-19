@@ -1,0 +1,23 @@
+.jqc-notification {
+    padding         : 5px;
+    border          : 1px solid #cccccc;
+    background-color: #efefef;
+}
+
+.jqc-notification.error {
+    border          : 1px solid #ff6666;
+    background-color: #ffcccc;
+}
+
+.jqc-notification.warning {
+    border          : 1px solid #cccc00;
+    background-color: #ffff33;
+}
+.jqc-notification.info {
+    border          : 1px solid #6666ff;
+    background-color: #ccccff;
+}
+.jqc-notification.ok {
+    border          : 1px solid #66ff66;
+    background-color: #ccffcc;
+}
