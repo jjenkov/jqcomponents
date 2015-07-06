@@ -24,7 +24,7 @@ function jqcPageController() {
 
     var pageController = {};
 
-    var bootPhases = [ "configure" , "layout", "render"]; /* phases after registration and instantiation */
+    //var bootPhases = [ "configure" , "layout", "render"]; /* phases after registration and instantiation */
     var bootState  = {instantiateModules : false, register : false, instantiateComponents: false, configure: false, layout: false, render: false };
     var moduleList = new Array(); // this is not visible outside Page Controller.
     var componentList = new Array();
@@ -47,7 +47,9 @@ function jqcPageController() {
             }
 
             try{
-                var module = eval(moduleFactoryFunctionName +"()");
+                var module = {};
+                var mod    = eval(moduleFactoryFunctionName +"(module)");
+                if(mod != null){ module = mod; }
                 _jqcPageController.addModule(moduleId, module);
             } catch(e) {
                 console.log("Error instantiating module: " + moduleId + ", exception: " + e);
@@ -178,13 +180,16 @@ function jqcPageController() {
         for(var i=0; i < componentList.length; i++) {
             var comp = componentList[i];
             if(typeof comp[phaseName] === 'function' ) {
-                comp[phaseName]();
+                comp[phaseName](pageController);
             }
         }
     }
 
 
     pageController.boot = function() {
+        /*
+          // The old boot process
+
         if(!bootState.instantiateModules)   { pageController.instantiateModules();    }
         if(!bootState.register)             { pageController.register();              pageController.executeModulePhase("postRegister"); }
         if(!bootState.instantiateComponents){ pageController.instantiateComponents(); pageController.executeModulePhase("postInstantiate"); }
@@ -196,6 +201,20 @@ function jqcPageController() {
                 pageController.executeModulePhase("post" + bootPhase.substring(0,1).toUpperCase() + bootPhase.substring(1, bootPhase.length));
             }
         }
+        */
+
+        pageController.instantiateModules();
+        pageController.register();
+        pageController.executeModulePhase("postRegister");
+        pageController.instantiateComponents();
+        pageController.executeModulePhase("postInstantiate");
+
+        pageController.executeComponentPhase("configure");
+        pageController.executeModulePhase("postConfigure");
+        pageController.executeComponentPhase("layout");
+        pageController.executeModulePhase("postLayout");
+        pageController.executeComponentPhase("render");
+        pageController.executeModulePhase("postRender");
 
         console.log("== jqc: Boot done ==");
 
